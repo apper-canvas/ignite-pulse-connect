@@ -9,13 +9,19 @@ export default {
       colors: {
         primary: {
           DEFAULT: '#4f46e5',
-          light: '#818cf8',
-          dark: '#4338ca'
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81'
         },
         secondary: {
-          DEFAULT: '#14b8a6',
-          light: '#5eead4',
-          dark: '#0d9488'
+          DEFAULT: '#06b6d4',
         },
         accent: '#f97316',
         surface: {
@@ -44,6 +50,17 @@ export default {
       borderRadius: {
         'xl': '0.75rem',
         '2xl': '1rem'
+      }
+    },
+    animation: {
+      'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      'bounce-slow': 'bounce 2s infinite',
+      'gradient': 'gradient 8s ease infinite',
+    },
+    keyframes: {
+      gradient: {
+        '0%, 100%': { backgroundPosition: '0% 50%' },
+        '50%': { backgroundPosition: '100% 50%' },
       }
     }
   },

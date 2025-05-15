@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import getIcon from '../utils/iconUtils';
+import Sidebar from '../components/ui/Sidebar';
 
 // Services
 import { fetchContacts, createContact, updateContact, deleteContact } from '../services/contactService';
@@ -193,96 +194,102 @@ function Contacts() {
   };
 
   return (
-    <div className="dashboard-container">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="dashboard-content"
-      >
-        <div className="dashboard-header">
-          <div>
-            <h1 className="dashboard-title flex items-center">
-              <Users className="mr-3 text-primary h-8 w-8" />
-              Contacts
-            </h1>
-            <p className="dashboard-subtitle max-w-2xl">
-              Manage your contacts, add new leads, and track important information.
-            </p>
+    <>
+      <Sidebar activeRoute="contacts" />
+      <div className="dashboard-container">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="dashboard-content"
+        >
+          <div className="dashboard-header">
+            <div>
+              <h1 className="dashboard-title flex items-center">
+                <div className="w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center text-primary mr-4">
+                  <Users className="h-6 w-6" />
+                </div>
+                <span className="gradient-text">Contacts</span>
+              </h1>
+              <p className="dashboard-subtitle max-w-2xl mt-2">
+                Manage your contacts, add new leads, and track important information.
+              </p>
+            </div>
           </div>
-        </div>
-        
-        <AnimatePresence mode="wait">
-          {showForm ? (
-            <ContactForm 
-              contact={selectedContact}
-              onSave={handleSaveContact}
-              onCancel={() => {
-                setShowForm(false);
-                setSelectedContact(null);
-              }}
-            />
-          ) : (
-            <motion.div
-              key="contacts-content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <div className="relative w-full sm:w-auto max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-surface-400" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Search contacts..."
-                    className="input-field pl-10 pr-4 py-2 w-full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+          
+          <AnimatePresence mode="wait">
+            {showForm ? (
+              <ContactForm 
+                contact={selectedContact}
+                onSave={handleSaveContact}
+                onCancel={() => {
+                  setShowForm(false);
+                  setSelectedContact(null);
+                }}
+              />
+            ) : (
+              <motion.div
+                key="contacts-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="bg-white dark:bg-surface-800 rounded-xl p-6 shadow-card border border-surface-200 dark:border-surface-700"
+              >
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <div className="relative w-full sm:w-auto max-w-md">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-surface-400" size={18} />
+                    <input
+                      type="text"
+                      placeholder="Search contacts..."
+                      className="input-field pl-10 pr-4 py-2 w-full"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="btn btn-primary flex items-center shadow-sm hover:shadow"
+                    onClick={() => {
+                      setSelectedContact(null);
+                      setShowForm(true);
+                    }}
+                  >
+                    <PlusCircle className="w-5 h-5 mr-2" />
+                    <span>Add Contact</span>
+                  </motion.button>
                 </div>
                 
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="btn btn-primary flex items-center"
-                  onClick={() => {
-                    setSelectedContact(null);
-                    setShowForm(true);
-                  }}
-                >
-                  <PlusCircle className="w-5 h-5 mr-2" />
-                  <span>Add Contact</span>
-                </motion.button>
-              </div>
-              
-              {loading ? (
-                <div className="flex justify-center items-center py-20">
-                  <LoadingSpinner className="w-10 h-10 text-primary animate-spin" />
-                </div>
-              ) : error ? (
-                <div className="text-center py-10">
-                  <div className="text-red-500 mb-4">{error}</div>
-                  <button 
-                    onClick={loadContacts}
-                    className="btn btn-primary"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              ) : (
-                <ContactList 
-                  contacts={filteredContacts}
-                  searchQuery={searchQuery}
-                  onEdit={handleEditContact}
-                  onDelete={handleDeleteContact}
-                  onClearSearch={() => setSearchQuery('')}
-                />
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </div>
+                {loading ? (
+                  <div className="flex justify-center items-center py-20">
+                    <LoadingSpinner className="w-10 h-10 text-primary animate-spin" />
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-10">
+                    <div className="text-red-500 mb-4">{error}</div>
+                    <button 
+                      onClick={loadContacts}
+                      className="btn btn-primary shadow-sm hover:shadow"
+                     >
+                      Try Again
+                    </button>
+                  </div>
+                ) : (
+                  <ContactList 
+                    contacts={filteredContacts}
+                    searchQuery={searchQuery}
+                    onEdit={handleEditContact}
+                    onDelete={handleDeleteContact}
+                    onClearSearch={() => setSearchQuery('')}
+                  />
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </>
   );
 }
 

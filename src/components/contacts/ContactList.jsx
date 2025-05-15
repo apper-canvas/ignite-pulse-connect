@@ -6,15 +6,16 @@ function ContactList({ contacts, searchQuery, onEdit, onDelete, onClearSearch })
   if (contacts.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-surface-500 dark:text-surface-400 mb-4">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-200 dark:bg-surface-700 flex items-center justify-center text-surface-400 dark:text-surface-500">
+          <SearchIcon className="w-8 h-8" />
+        </div>
+        <p className="text-surface-600 dark:text-surface-400 mb-6 text-lg">
           {searchQuery ? "No contacts match your search" : "No contacts found"}
         </p>
         {searchQuery && (
           <button
             onClick={onClearSearch}
-            className="btn bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-300 dark:hover:bg-surface-600"
-          >
-            Clear Search
+            className="btn bg-white dark:bg-surface-700 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-600 shadow-sm">Clear Search
           </button>
         )}
       </div>
@@ -34,7 +35,7 @@ function ContactList({ contacts, searchQuery, onEdit, onDelete, onClearSearch })
   
   return (
     <motion.div 
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
       variants={container}
       initial="hidden"
       animate="show"

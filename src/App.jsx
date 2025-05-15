@@ -15,6 +15,8 @@ import Signup from './pages/Signup';
 import Callback from './pages/Callback';
 import ErrorPage from './pages/ErrorPage';
 import Dashboard from './pages/Dashboard';
+import Contacts from './pages/Contacts';
+import Navbar from './components/ui/Navbar';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -140,18 +142,10 @@ function App() {
   
   return (
     <AuthContext.Provider value={authMethods}>
-      <div className="min-h-screen transition-colors duration-300">
-        {isAuthenticated && (
-          <header className="fixed top-0 right-0 p-4 z-50">
-            <motion.button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-surface-200 dark:bg-surface-800 text-surface-700 dark:text-surface-200 hover:bg-surface-300 dark:hover:bg-surface-700 transition-all duration-300"
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.1 }}
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </motion.button>
+      <div className="min-h-screen transition-colors duration-300 bg-surface-50 dark:bg-surface-900">
+        {isAuthenticated && (  
+          <header className="fixed top-0 left-0 right-0 z-40">
+            <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           </header>
         )}
 
@@ -164,6 +158,11 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/contacts" element={
+            <ProtectedRoute>
+              <Contacts />
             </ProtectedRoute>
           } />
           <Route path="*" element={<NotFound />} />
@@ -180,7 +179,7 @@ function App() {
           draggable
           pauseOnHover
           theme={darkMode ? "dark" : "light"}
-          toastClassName="!bg-surface-100 dark:!bg-surface-800 !text-surface-700 dark:!text-surface-200 !rounded-xl !shadow-card"
+          toastClassName="!bg-white dark:!bg-surface-800 !text-surface-700 dark:!text-surface-200 !rounded-xl !shadow-card"
         />
       </div>
     </AuthContext.Provider>

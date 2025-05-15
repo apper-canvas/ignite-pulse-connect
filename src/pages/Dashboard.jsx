@@ -1,52 +1,160 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import getIcon from '../utils/iconUtils';
-import { useContext } from 'react';
-import { AuthContext } from '../App';
+import Sidebar from '../components/ui/Sidebar';
+import StatCard from '../components/dashboard/StatCard';
 
 // Icons
 const Users = getIcon('Users');
 const BarChart = getIcon('BarChart');
 const Calendar = getIcon('Calendar');
 const ListTodo = getIcon('ListTodo');
-const LogOut = getIcon('LogOut');
+const TrendingUp = getIcon('TrendingUp');
+const Activity = getIcon('Activity');
+const Zap = getIcon('Zap');
+const CheckCircle = getIcon('CheckCircle');
+const Clock = getIcon('Clock');
+const ArrowRight = getIcon('ArrowRight');
 
 function Dashboard() {
   const { user } = useSelector((state) => state.user);
-  const { logout } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState('overview');
+  
+  // Animation variants for staggered children
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
   
   return (
-    <div className="dashboard-container">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="dashboard-content"
-      >
-        <div className="dashboard-header">
-          <div>
-            <h1 className="dashboard-title bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Welcome, {user?.firstName || 'User'}!
-            </h1>
-            <p className="dashboard-subtitle max-w-2xl">
-              Your CRM dashboard is ready. Manage your contacts, deals and tasks efficiently.
-            </p>
+    <>
+      <Sidebar activeRoute="dashboard" />
+      <div className="dashboard-container">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="dashboard-content"
+        >
+          <div className="dashboard-header mb-8">
+            <div>
+              <h1 className="dashboard-title gradient-text">
+                Welcome, {user?.firstName || 'User'}!
+              </h1>
+              <p className="dashboard-subtitle max-w-2xl mt-2">
+                Your CRM dashboard is ready. Manage your contacts, deals and tasks efficiently.
+              </p>
+            </div>
+            
+            <div className="flex space-x-2 rounded-xl bg-white dark:bg-surface-800 shadow-sm p-1 border border-surface-200 dark:border-surface-700">
+              <button 
+                onClick={() => setActiveTab('overview')}
+                className={`px-4 py-2 rounded-lg transition-all ${
+                  activeTab === 'overview' 
+                    ? 'bg-primary text-white shadow-sm' 
+                    : 'text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700'
+                }`}
+              >
+                Overview
+              </button>
+              <button 
+                onClick={() => setActiveTab('performance')}
+                className={`px-4 py-2 rounded-lg transition-all ${
+                  activeTab === 'performance' 
+                    ? 'bg-primary text-white shadow-sm' 
+                    : 'text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700'
+                }`}
+              >
+                Performance
+              </button>
+            </div>
           </div>
           
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="btn flex items-center self-start bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300"
-            onClick={logout}
+          {/* Stats Overview */}
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
           >
-            <LogOut className="w-4 h-4 mr-2" /> Logout
-          </motion.button>
-        </div>
-      </motion.div>
-    </div>
+            <StatCard 
+              variants={item}
+              title="Total Contacts"
+              value="128"
+              change="+12%"
+              changeType="positive"
+              icon={<Users />}
+              color="primary"
+            />
+            <StatCard 
+              variants={item}
+              title="Active Deals"
+              value="24"
+              change="+5%"
+              changeType="positive"
+              icon={<BarChart />}
+              color="secondary"
+            />
+            <StatCard 
+              variants={item}
+              title="Tasks Completed"
+              value="78"
+              change="+18%"
+              changeType="positive"
+              icon={<CheckCircle />}
+              color="green"
+            />
+            <StatCard 
+              variants={item}
+              title="Pending Tasks"
+              value="12"
+              change="-3%"
+              changeType="negative"
+              icon={<Clock />}
+              color="amber"
+            />
+          </motion.div>
+          
+          {/* Quick Actions */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white dark:bg-surface-800 rounded-xl p-6 shadow-card border border-surface-200 dark:border-surface-700 mb-8"
+          >
+            <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link to="/contacts" className="flex items-center p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-800/30 transition-colors group">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium">Manage Contacts</h3>
+                  <p className="text-sm text-surface-600 dark:text-surface-400">View and edit your contacts</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+              
+              {/* Additional quick action links would go here */}
+            </div>
+          </motion.div>
+          
+        </motion.div>
+      </div>
+    </>
   );
 }
 

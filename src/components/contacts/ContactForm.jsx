@@ -106,15 +106,16 @@ function ContactForm({ contact, onSave, onCancel }) {
       className="mb-6"
     >
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">
+        <h3 className="text-xl font-semibold flex items-center">
+          <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary flex items-center justify-center mr-2">
+            {contact ? <User className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
+          </div>
           {contact ? "Edit Contact" : "Add New Contact"}
         </h3>
         <button
           onClick={onCancel}
-          className="text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200"
-          aria-label="Close form"
-        >
-          <XCircle className="w-6 h-6" />
+          className="p-2 rounded-full hover:bg-surface-200 dark:hover:bg-surface-700 text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200 transition-colors">
+          <XCircle className="w-5 h-5" />
         </button>
       </div>
       
@@ -265,21 +266,21 @@ function ContactForm({ contact, onSave, onCancel }) {
           <button
             type="button"
             onClick={onCancel}
-            className="btn bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-300 dark:hover:bg-surface-600"
+            className="btn bg-white dark:bg-surface-700 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-600"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className={`btn btn-primary ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`btn btn-primary ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''} shadow-sm hover:shadow`}
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <>
                 <LoadingSpinner className="w-4 h-4 mr-2 animate-spin" />
-                {contact ? "Updating..." : "Saving..."}
+                <span>{contact ? "Updating..." : "Saving..."}</span>
               </>
-            ) : (
+            ) : ( 
               contact ? "Update Contact" : "Add Contact"
             )}
           </button>
