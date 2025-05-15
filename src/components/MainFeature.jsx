@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSelector } from 'react-redux';
 import getIcon from '../utils/iconUtils';
+
+import { fetchContacts, createContact, updateContact, deleteContact } from '../services/contactService';
 
 // Icons
 const Search = getIcon('Search');
@@ -17,49 +20,16 @@ const User = getIcon('User');
 const AtSign = getIcon('AtSign');
 const Briefcase = getIcon('Briefcase');
 const Tag = getIcon('Tag');
-
-// Sample initial data
-const initialContacts = [
-  { 
-    id: '1', 
-    firstName: 'Sarah', 
-    lastName: 'Johnson', 
-    email: 'sarah.j@example.com', 
-    phone: '(555) 123-4567', 
-    company: 'Innovatech Solutions', 
-    position: 'Marketing Director',
-    leadSource: 'Website',
-    tags: ['VIP', 'Marketing'],
-    lastContactDate: '2023-12-15'
-  },
-  { 
-    id: '2', 
-    firstName: 'Michael', 
-    lastName: 'Chen', 
-    email: 'mchen@techpro.com', 
-    phone: '(555) 987-6543', 
-    company: 'TechPro Systems', 
-    position: 'CTO',
-    leadSource: 'Conference',
-    tags: ['Technical', 'Decision Maker'],
-    lastContactDate: '2024-01-05'
-  },
-  { 
-    id: '3', 
-    firstName: 'Jessica', 
-    lastName: 'Williams', 
-    email: 'j.williams@globalretail.com', 
-    phone: '(555) 555-1212', 
-    company: 'Global Retail Group', 
-    position: 'Procurement Manager',
-    leadSource: 'Referral',
-    tags: ['Retail', 'New'],
-    lastContactDate: '2024-01-28'
-  }
-];
+const LoadingSpinner = getIcon('Loader');
 
 function MainFeature({ activeTab }) {
-  const [contacts, setContacts] = useState(initialContacts);
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { user } = useSelector((state) => state.user);
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -74,7 +44,47 @@ function MainFeature({ activeTab }) {
     tags: ''
   });
   const [errors, setErrors] = useState({});
-
+  
+  // Fetch contacts from the database
+  useEffect(() => {
+    if (activeTab !== 'contacts') return;
+    
+    const loadContacts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchContacts();
+        
+        // Map the data to our application structure
+        const mappedContacts = data.map(contact => ({
+          id: contact.Id.toString(),
+          firstName: contact.firstName || '',
+          lastName: contact.lastName || '',
+          email: contact.email || '',
+          phone: contact.phone || '',
+          company: contact.company || '',
+          position: contact.position || '',
+          leadSource: contact.leadSource || '',
+          tags: contact.Tags ? contact.Tags.split(',').filter(tag => tag.trim()) : [],
+          lastContactDate: contact.lastContactDate || new Date().toISOString().split('T')[0],
+          Name: contact.Name || '',
+          // Include other fields as needed
+        }));
+        
+        setContacts(mappedContacts);
+      } catch (err) {
+        console.error('Error fetching contacts:', err);
+        setError('Failed to load contacts. Please try again later.');
+        toast.error('Failed to load contacts');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadContacts();
+  }, [activeTab]);
+  
+  
   // Filter contacts based on search query
   const filteredContacts = contacts.filter(contact => {
     const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
@@ -86,6 +96,7 @@ function MainFeature({ activeTab }) {
       contact.company.toLowerCase().includes(searchLower)
     );
   });
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -124,29 +135,63 @@ function MainFeature({ activeTab }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
       toast.error("Please fix the form errors");
       return;
     }
+
+    setIsSubmitting(true);
     
-    if (selectedContact) {
-      // Update existing contact
-      const updatedContacts = contacts.map(contact => 
-        contact.id === selectedContact.id 
-          ? { 
-              ...contact, 
-              ...formData,
-              tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
-            } 
-          : contact
-      );
-      
-      setContacts(updatedContacts);
-      toast.success("Contact updated successfully!");
-    } else {
+    try {
+      if (selectedContact) {
+        // Prepare data for API
+        const contactData = {
+          Id: parseInt(selectedContact.id),
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          Name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company,
+          position: formData.position,
+          leadSource: formData.leadSource,
+          Tags: formData.tags,
+          lastContactDate: new Date().toISOString().split('T')[0]
+        };
+        
+        // Update contact in database
+        await updateContact(contactData);
+        
+        // Update local state
+        const updatedContacts = contacts.map(contact => 
+          contact.id === selectedContact.id 
+            ? { 
+                ...contact, 
+                ...formData,
+                tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
+              } 
+            : contact
+        );
+        
+        setContacts(updatedContacts);
+        toast.success("Contact updated successfully!");
+      } else {
+        // Prepare data for API
+        const contactData = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          Name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company,
+          position: formData.position,
+          leadSource: formData.leadSource,
+          Tags: formData.tags,
+          lastContactDate: new Date().toISOString().split('T')[0]
+        };
       // Add new contact
       const newContact = {
         id: Date.now().toString(),
@@ -154,11 +199,26 @@ function MainFeature({ activeTab }) {
         tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
         lastContactDate: new Date().toISOString().split('T')[0]
       };
+
+      // Create contact in database
+      const createdContact = await createContact(contactData);
+      
+      // Add created contact to local state with ID from server
+      newContact.id = createdContact.Id.toString();
       
       setContacts([...contacts, newContact]);
       toast.success("Contact added successfully!");
+      }
+    } catch (error) {
+      console.error('Error saving contact:', error);
+      toast.error('Failed to save contact. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+      resetForm();
     }
-    
+  };
+  
+  const resetForm = () => {
     resetForm();
   };
 
@@ -177,11 +237,25 @@ function MainFeature({ activeTab }) {
     setShowAddForm(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
-      setContacts(contacts.filter(contact => contact.id !== id));
-      toast.info("Contact deleted successfully");
+      setContactLoading(true);
+      try {
+        // Delete from database
+        await deleteContact(parseInt(id));
+        
+        // Update local state
+        setContacts(contacts.filter(contact => contact.id !== id));
+        toast.info("Contact deleted successfully");
+      } catch (error) {
+        console.error('Error deleting contact:', error);
+        toast.error('Failed to delete contact. Please try again.');
+      } finally {
+        setContactLoading(false);
+      }
     }
+    
+    
   };
 
   const resetForm = () => {
@@ -211,6 +285,18 @@ function MainFeature({ activeTab }) {
         </p>
       </div>
     );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <LoadingSpinner className="w-10 h-10 text-primary animate-spin" />
+      </div>
+    );
+  }
+  
+  if (error) {
+    return <div className="text-center py-10 text-red-500">{error}</div>;
   }
 
   return (
@@ -390,7 +476,8 @@ function MainFeature({ activeTab }) {
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className={`btn btn-primary ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  disabled={isSubmitting}
                 >
                   {selectedContact ? "Update Contact" : "Add Contact"}
                 </button>
@@ -426,6 +513,13 @@ function MainFeature({ activeTab }) {
                 <span>Add Contact</span>
               </motion.button>
             </div>
+
+            {contactLoading && (
+              <div className="flex justify-center items-center py-4">
+                <LoadingSpinner className="w-6 h-6 text-primary animate-spin" />
+                <span className="ml-2 text-surface-600 dark:text-surface-400">Processing...</span>
+              </div>
+            )}
 
             {filteredContacts.length === 0 ? (
               <div className="text-center py-12">
