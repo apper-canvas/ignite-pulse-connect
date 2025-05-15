@@ -218,9 +218,6 @@ function MainFeature({ activeTab }) {
     }
   };
   
-  const resetForm = () => {
-    resetForm();
-  };
 
   const handleEdit = (contact) => {
     setSelectedContact(contact);
