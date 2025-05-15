@@ -47,7 +47,8 @@ export async function fetchContacts() {
 
     // Handle empty data
     if (!response || !response.data || response.data.length === 0) {
-      return [];
+      console.log("No contacts found or empty response");
+      return []; 
     }
 
     return response.data;
@@ -93,10 +94,17 @@ export async function createContact(contactData) {
       record: contactData
     };
 
-    const response = await apperClient.createRecord('contact', params);
+    try {
+      const response = await apperClient.createRecord('contact', params);
 
-    if (!response || !response.success || !response.data) {
-      throw new Error('Failed to create contact');
+      if (!response || !response.success || !response.data) {
+        console.error('Failed to create contact:', response);
+        throw new Error('Failed to create contact: ' + (response?.message || 'Unknown error'));
+      }
+      
+      return response.data;
+    } catch (apiError) {
+      throw new Error(`API Error: ${apiError.message || 'Unknown error creating contact'}`);
     }
 
     return response.data;
@@ -126,9 +134,9 @@ export async function updateContact(contactData) {
     };
 
     const response = await apperClient.updateRecord('contact', params);
-
+    
     if (!response || !response.success) {
-      throw new Error('Failed to update contact');
+      throw new Error('Failed to update contact: ' + (response?.message || 'Unknown error'));
     }
 
     return response.data;
@@ -155,7 +163,7 @@ export async function deleteContact(contactId) {
     const response = await apperClient.deleteRecord('contact', params);
 
     if (!response || !response.success) {
-      throw new Error('Failed to delete contact');
+      throw new Error('Failed to delete contact: ' + (response?.message || 'Unknown error'));
     }
 
     return true;
