@@ -23,14 +23,14 @@ function ClientList({ clients, searchQuery, onEdit, onDelete, onClearSearch }) {
     return (
       <div className="text-center py-10">
         <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold mb-2">No clients found</h3>
-        <p className="text-surface-600 dark:text-surface-400 mb-6">
+        <h3 className="text-2xl font-semibold mb-3">No clients found</h3>
+        <p className="text-surface-600 dark:text-surface-400 mb-6 max-w-md mx-auto">
           No clients match your search for "{searchQuery}"
         </p>
         <button 
           onClick={onClearSearch}
-          className="btn text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 flex items-center mx-auto"
-        >
+          className="btn bg-white dark:bg-surface-700 text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 flex items-center mx-auto border border-surface-200 dark:border-surface-600"
+          >
           <XCircle className="w-4 h-4 mr-2" />
           Clear Search
         </button>
@@ -43,7 +43,7 @@ function ClientList({ clients, searchQuery, onEdit, onDelete, onClearSearch }) {
       variants={container}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
     >
       {clients.map(client => (
         <ClientCard key={client.id} client={client} onEdit={onEdit} onDelete={onDelete} />

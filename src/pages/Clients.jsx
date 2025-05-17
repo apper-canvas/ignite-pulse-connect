@@ -214,7 +214,7 @@ function Clients() {
   return (
     <>
       <Sidebar activeRoute="clients" />
-      <div className="dashboard-container">
+      <div className="dashboard-container" style={{ backgroundImage: "url('https://burst.shopifycdn.com/photos/white-marble-texture.jpg?width=1850&format=pjpg&exif=0&iptc=0')", backgroundSize: 'cover', backgroundAttachment: 'fixed', backgroundPosition: 'center', backgroundBlendMode: 'overlay' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -224,10 +224,10 @@ function Clients() {
           <div className="dashboard-header">
             <div>
               <h1 className="dashboard-title flex items-center">
-                <div className="w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center text-primary mr-4">
-                  <UserPlus className="h-6 w-6" />
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/30 dark:to-primary-900/10 flex items-center justify-center text-primary mr-4 shadow-sm">
+                  <UserPlus className="h-6 w-6 animate-pulse-slow" />
                 </div>
-                <span className="gradient-text">Clients</span>
+                <span className="gradient-text">Your Clients</span>
               </h1>
               <p className="dashboard-subtitle max-w-2xl mt-2">
                 Manage your clients, update their information, and track important details.
@@ -251,31 +251,31 @@ function Clients() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="bg-white dark:bg-surface-800 rounded-xl p-6 shadow-card border border-surface-200 dark:border-surface-700"
+                className="bg-white/90 dark:bg-surface-800/90 rounded-xl p-6 shadow-card border border-surface-200 dark:border-surface-700 backdrop-blur-sm"
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                  <div className="relative w-full sm:w-auto max-w-md">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-surface-400" size={18} />
+                  <div className="relative w-full sm:w-auto max-w-xl">
+                    <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-surface-400" size={18} />
                     <input
                       type="text"
                       placeholder="Search clients..."
-                      className="input-field pl-10 pr-4 py-2 w-full"
+                      className="input-field pl-10 pr-4 py-2.5 w-full text-sm rounded-full shadow-sm"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
                   
                   <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="btn btn-primary flex items-center shadow-sm hover:shadow"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="btn btn-primary flex items-center shadow-sm hover:shadow-md px-5 py-2.5"
                     onClick={() => {
                       setSelectedClient(null);
                       setShowForm(true);
                     }}
                   >
-                    <PlusCircle className="w-5 h-5 mr-2" />
-                    <span>Add Client</span>
+                    <PlusCircle className="w-5 h-5 mr-2.5" />
+                    <span>New Client</span>
                   </motion.button>
                 </div>
                 

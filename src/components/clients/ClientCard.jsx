@@ -32,29 +32,38 @@ function ClientCard({ client, onEdit, onDelete }) {
   return (
     <motion.div
       variants={item}
-      className="card group hover:translate-y-[-4px] transition-transform"
-      whileHover={{ scale: 1.01 }}
+      className="card group hover:translate-y-[-4px] transition-all"
+      whileHover={{ scale: 1.02 }}
       layout
     >
       <div className="flex justify-between">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white mb-3 shadow-sm">
-          <span className="text-lg font-semibold">
-            {client.firstName.charAt(0)}{client.lastName.charAt(0)}
-          </span>
+        <div className="relative mb-3">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white shadow-md group-hover:shadow-glow-sm transition-shadow">
+            <span className="text-xl font-semibold">
+              {client.firstName.charAt(0)}{client.lastName.charAt(0)}
+            </span>
+          </div>
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-surface-800 border-2 border-white dark:border-surface-800 flex items-center justify-center shadow-sm">
+            <Briefcase className="w-3 h-3 text-primary" />
+          </div>
         </div>
         
         <div className="flex space-x-1">
           <button 
             onClick={() => onEdit(client)}
-            className="p-2 rounded-lg text-surface-500 hover:text-primary hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+            className="p-2 rounded-lg text-surface-500 hover:text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 active:scale-95 transition-all"
             aria-label={`Edit ${fullName}`}
           >
-            <Edit2 className="w-4 h-4" />
+            <Edit2 className="w-4.5 h-4.5" />
           </button>
           <button 
             onClick={() => onDelete(client.id)}
-            className="p-2 rounded-lg text-surface-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            className="p-2 rounded-lg text-surface-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 active:scale-95 transition-all"
             aria-label={`Delete ${fullName}`}
+            whileTap={{ 
+              scale: 0.9,
+              transition: { duration: 0.1 }
+            }}
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -71,40 +80,40 @@ function ClientCard({ client, onEdit, onDelete }) {
       
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm">
-          <Mail className="w-4 h-4 mr-2 text-surface-500" />
+          <Mail className="w-4.5 h-4.5 mr-3 text-primary/70" />
           <a 
             href={`mailto:${client.email}`} 
-            className="text-primary hover:underline truncate"
+            className="text-primary hover:underline truncate font-medium"
             title={client.email}
           >
             {client.email}
           </a>
         </div>
         
+        {client.industry && (
+          <div className="flex items-center text-sm">
+            <Briefcase className="w-4.5 h-4.5 mr-3 text-surface-500" />
+            <span>{client.industry}</span>
+          </div>
+        )}
+        
         {client.phone && (
           <div className="flex items-center text-sm">
-            <Phone className="w-4 h-4 mr-2 text-surface-500" />
+            <Phone className="w-4.5 h-4.5 mr-3 text-surface-500" />
             <a href={`tel:${client.phone}`} className="hover:text-primary">
               {client.phone}
             </a>
           </div>
         )}
         
-        {client.industry && (
-          <div className="flex items-center text-sm">
-            <Briefcase className="w-4 h-4 mr-2 text-surface-500" />
-            <span>{client.industry}</span>
-          </div>
-        )}
-        
         {fullAddress && (
           <div className="flex items-start text-sm">
-            <MapPin className="w-4 h-4 mr-2 text-surface-500 mt-1 flex-shrink-0" />
+            <MapPin className="w-4.5 h-4.5 mr-3 text-surface-500 mt-0.5 flex-shrink-0" />
             <span className="break-words">{fullAddress}</span>
           </div>
         )}
       </div>
-      
+
       {client.tags && client.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
           {client.tags.map((tag, idx) => (
