@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser, clearUser } from './store/userSlice';
 import getIcon from './utils/iconUtils';
