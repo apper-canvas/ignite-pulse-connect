@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector } from 'react-redux';
-import { useContext } from 'react';
+import { AuthContext } from '../../App';
 import { AuthContext } from '../../App';
 import getIcon from '../../utils/iconUtils';
 
@@ -11,7 +11,7 @@ const Sun = getIcon('Sun');
 const Moon = getIcon('Moon');
 const ChevronDown = getIcon('ChevronDown');
 const LogOut = getIcon('LogOut');
-const Menu = getIcon('Menu');
+  const { logout } = useContext(AuthContext) || {};
 const X = getIcon('X');
 const User = getIcon('User');
 
@@ -37,7 +37,7 @@ function Navbar({ darkMode, toggleDarkMode }) {
 
   return (
     <nav className="bg-white/90 dark:bg-surface-800/90 border-b border-surface-200 dark:border-surface-700 px-4 py-3 backdrop-blur-md shadow-sm">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <button onClick={logout || (() => console.error("Logout function not available"))} className="p-2 rounded-full hover:bg-surface-200 dark:hover:bg-surface-700">
         <div className="flex items-center space-x-4">
           {/* Mobile menu button */}
           <button 
