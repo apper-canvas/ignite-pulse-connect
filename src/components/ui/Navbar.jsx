@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSelector } from 'react-redux';
 import { AuthContext } from '../../App';
 import { AuthContext } from '../../App';
 import getIcon from '../../utils/iconUtils';
@@ -12,8 +11,6 @@ const Moon = getIcon('Moon');
 const ChevronDown = getIcon('ChevronDown');
 const LogOut = getIcon('LogOut');
   const { logout } = useContext(AuthContext) || {};
-const X = getIcon('X');
-const User = getIcon('User');
 
 function Navbar({ darkMode, toggleDarkMode }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
