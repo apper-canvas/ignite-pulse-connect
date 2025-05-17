@@ -276,8 +276,9 @@ function MainFeature({ activeTab }) {
   if (activeTab !== 'contacts') {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="text-4xl mb-3">{TypeInfo[activeTab]?.icon || null}</div>
         <h3 className="text-xl sm:text-2xl font-medium text-surface-600 dark:text-surface-400 mb-4">
-          {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} View
+          {TypeInfo[activeTab]?.pluralLabel || (activeTab.charAt(0).toUpperCase() + activeTab.slice(1))} View
         </h3>
         <p className="text-surface-500 dark:text-surface-500 max-w-md">
           This feature is under development. Please check back soon!
