@@ -1,3 +1,5 @@
+import React from 'react';
+import TypeInfo from '../utils/typeInfo';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
