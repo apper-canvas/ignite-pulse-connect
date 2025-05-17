@@ -31,6 +31,14 @@ const TypeInfo = {
     icon: getIcon('BarChart'),
     route: '/deals',
     color: 'accent'
+  },
+  tasks: {
+    name: 'task', 
+    label: 'Task',
+    pluralLabel: 'Tasks',
+    icon: getIcon('ListTodo'),
+    route: '/tasks',
+    color: 'primary'
   }
 };
 

@@ -16,6 +16,7 @@ import Callback from './pages/Callback';
 import ErrorPage from './pages/ErrorPage';
 import Dashboard from './pages/Dashboard';
 import Contacts from './pages/Contacts';
+import Tasks from './pages/Tasks';
 import Navbar from './components/ui/Navbar';
 
 // Components
@@ -168,6 +169,11 @@ function App() {
           <Route path="/clients" element={
             <ProtectedRoute>
               <Clients />
+            </ProtectedRoute>
+          } />
+          <Route path="/tasks" element={
+            <ProtectedRoute>
+              <Tasks />
             </ProtectedRoute>
           } />
           <Route path="*" element={<NotFound />} />

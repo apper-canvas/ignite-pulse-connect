@@ -11,11 +11,16 @@ export async function fetchTasks() {
 
     const params = {
       "Fields": [
-        { "Field": { "Name": "Id" } },
-        { "Field": { "Name": "Name" } },
-        { "Field": { "Name": "Tags" } },
-        { "Field": { "Name": "Owner" } }
+        "Id",
+        "Name",
+        "Tags",
+        "Owner",
+        "Status",
+        "Priority",
+        "DueDate",
+        "Description"
       ],
+      
       "where": [
         {
           "fieldName": "IsDeleted",
@@ -60,7 +65,14 @@ export async function createTask(taskData) {
 
     // Set up record to create
     const params = {
-      record: taskData
+      record: {
+        Name: taskData.Name,
+        Tags: taskData.Tags || '',
+        Status: taskData.Status || 'Not Started',
+        Priority: taskData.Priority || 'Medium',
+        Description: taskData.Description || '',
+        DueDate: taskData.DueDate || null
+      }
     };
 
     const response = await apperClient.createRecord('task', params);
@@ -92,7 +104,15 @@ export async function updateTask(taskData) {
 
     // Set up record to update
     const params = {
-      record: taskData
+      record: {
+        Id: taskData.Id,
+        ...taskData.Name !== undefined && { Name: taskData.Name },
+        ...taskData.Tags !== undefined && { Tags: taskData.Tags },
+        ...taskData.Status !== undefined && { Status: taskData.Status },
+        ...taskData.Priority !== undefined && { Priority: taskData.Priority },
+        ...taskData.Description !== undefined && { Description: taskData.Description },
+        ...taskData.DueDate !== undefined && { DueDate: taskData.DueDate }
+      }
     };
 
     const response = await apperClient.updateRecord('task', params);

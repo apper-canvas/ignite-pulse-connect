@@ -1,99 +1,133 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useContext } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { AuthContext } from '../../App';
 import getIcon from '../../utils/iconUtils';
 
 // Icons
-const ChevronRight = getIcon('ChevronRight');
 const Home = getIcon('Home');
 const Users = getIcon('Users');
 const BarChart = getIcon('BarChart');
-const ListTodo = getIcon('ListTodo');
 const Settings = getIcon('Settings');
+const UserPlus = getIcon('UserPlus');
+const LogOut = getIcon('LogOut');
+const ChevronRight = getIcon('ChevronRight');
+const ChevronLeft = getIcon('ChevronLeft');
+const ListTodo = getIcon('ListTodo');
 
-function Sidebar({ activeRoute }) {
-  const [collapsed, setCollapsed] = useState(false);
+const sidebarVariants = {
+  open: { 
+    width: '256px',
+    transition: { type: 'spring', stiffness: 300, damping: 24 }
+  },
+  closed: { 
+    width: '64px',
+    transition: { type: 'spring', stiffness: 300, damping: 24 }
+  }
+};
+
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
+  const { logout } = useContext(AuthContext);
   
-  const sidebarClass = collapsed 
-    ? 'w-16 transition-all duration-300 ease-in-out' 
-    : 'w-64 transition-all duration-300 ease-in-out';
-    
-  const navItems = [
-    { name: 'Dashboard', icon: Home, path: '/dashboard' },
-    { name: 'Contacts', icon: Users, path: '/contacts' },
-    { name: 'Deals', icon: BarChart, path: '/deals' },
-    { name: 'Clients', icon: getIcon('UserPlus'), path: '/clients' },
-    { name: 'Tasks', icon: ListTodo, path: '/tasks' },
-    { name: 'Settings', icon: Settings, path: '/settings' },
-  ];
-
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside className={`fixed top-16 left-0 h-full hidden lg:block bg-white/95 dark:bg-surface-800/95 border-r border-surface-200 dark:border-surface-700 z-30 backdrop-blur-sm ${sidebarClass}`}>
-        <div className="flex flex-col h-full py-6">
-          <div className="px-4 mb-6 flex justify-end">
-            <button
-              onClick={() => setCollapsed(!collapsed)}
-              className="p-1.5 rounded-full hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-500 transition-colors active:scale-95"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${collapsed ? 'rotate-0' : 'rotate-180'}`} />
-            </button>
-          </div>
-          
-          <nav className="flex-1 space-y-1 px-2">
-            {navItems.map((item) => {
-              const isActive = activeRoute === item.name.toLowerCase();
-              const activeClass = isActive 
-                ? 'bg-gradient-to-r from-primary-50 to-transparent dark:from-primary-900/20 dark:to-transparent text-primary dark:text-primary-400 font-medium border-l-4 border-primary' 
-                : 'text-surface-700 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700';
-              
-              return (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`flex items-center p-2 rounded-lg transition-colors ${activeClass}`}
-                  style={{ paddingLeft: isActive ? '10px' : '12px' }}
-                >
-                  <div className="flex items-center">
-                    <item.icon className={`w-5 h-5 ${isActive ? 'text-primary' : 'text-surface-500 dark:text-surface-400'} ${isActive ? 'animate-pulse-slow' : ''}`} />
-                    {!collapsed && <span className="ml-3">{item.name}</span>}
-                  </div>
-                  
-                  {isActive && !collapsed && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="ml-auto w-1.5 h-5 bg-primary rounded-full shadow-glow-sm"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-          
-          <div className="mt-auto">
-            {!collapsed && (
-              <div className="relative px-4 py-6 mx-2 mb-2 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/10 rounded-xl overflow-hidden border border-primary-200/50 dark:border-primary-800/20">
-                {/* Decorative element */}
-                <div className="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-primary/10 dark:bg-primary/5"></div>
-                <div className="absolute -bottom-8 -left-8 w-16 h-16 rounded-full bg-primary/10 dark:bg-primary/5"></div>
-                
-                <h4 className="text-sm font-medium text-primary mb-1">Need Help?</h4>
-                <p className="text-xs text-surface-600 dark:text-surface-400">Check our documentation for help with your CRM setup.</p>
-                <button className="mt-3 px-3 py-1.5 text-xs bg-white dark:bg-surface-800 text-primary rounded-lg border border-primary-200/50 dark:border-primary-800/20 hover:shadow-sm transition-shadow">
-                  View Docs</button>
-              </div>
-            )}
-          </div>
+    <motion.div 
+      className="fixed top-16 left-0 h-full bg-white dark:bg-surface-800 shadow-md z-30 transform overflow-y-auto
+                overflow-x-hidden transition-all duration-300 scrollbar-thin scrollbar-thumb-gray-300"
+      variants={sidebarVariants}
+      initial={isOpen ? 'open' : 'closed'}
+      animate={isOpen ? 'open' : 'closed'}
+    >
+      <div className="py-4 px-2 flex flex-col h-full">
+        <div className="flex-grow">
+          <ul className="space-y-1">
+            <NavItem 
+              to="/dashboard" 
+              icon={<Home />} 
+              label="Dashboard" 
+              isOpen={isOpen}
+              isActive={location.pathname === '/dashboard'}
+            />
+            <NavItem 
+              to="/contacts" 
+              icon={<Users />} 
+              label="Contacts" 
+              isOpen={isOpen}
+              isActive={location.pathname === '/contacts'}
+            />
+            <NavItem 
+              to="/clients" 
+              icon={<UserPlus />} 
+              label="Clients" 
+              isOpen={isOpen}
+              isActive={location.pathname === '/clients'}
+            />
+            <NavItem 
+              to="/tasks" 
+              icon={<ListTodo />} 
+              label="Tasks" 
+              isOpen={isOpen}
+              isActive={location.pathname === '/tasks'}
+            />
+            <NavItem 
+              to="/deals" 
+              icon={<BarChart />} 
+              label="Deals" 
+              isOpen={isOpen}
+              isActive={location.pathname === '/deals'}
+            />
+          </ul>
         </div>
-      </aside>
-    </>
+        
+        <div className="pt-6 border-t border-surface-200 dark:border-surface-700 mt-6">
+          <ul className="space-y-1">
+            <NavItem 
+              to="/settings" 
+              icon={<Settings />} 
+              label="Settings" 
+              isOpen={isOpen}
+              isActive={location.pathname === '/settings'}
+            />
+            <li>
+              <button 
+                className="w-full flex items-center text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700 
+                         rounded-lg p-2 transition-colors duration-200"
+                onClick={logout}
+              >
+                <span className="text-lg inline-block w-8">
+                  <LogOut />
+                </span>
+                {isOpen && <span className="ml-2">Logout</span>}
+              </button>
+            </li>
+            <li>
+              <button 
+                className="w-full flex items-center text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700 
+                         rounded-lg p-2 transition-colors duration-200"
+                onClick={toggleSidebar}
+                aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
+              >
+                <span className="text-lg inline-block w-8">
+                  {isOpen ? <ChevronLeft /> : <ChevronRight />}
+                </span>
+                {isOpen && <span className="ml-2">{isOpen ? "Collapse" : "Expand"}</span>}
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </motion.div>
   );
-}
+};
+
+const NavItem = ({ to, icon, label, isOpen, isActive }) => (
+  <li>
+    <NavLink to={to} className={`flex items-center text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700 
+                           rounded-lg p-2 transition-colors duration-200 ${isActive ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light' : ''}`}>
+      <span className="text-lg inline-block w-8">{icon}</span>
+      {isOpen && <span className="ml-2">{label}</span>}
+    </NavLink>
+  </li>
+);
 
 export default Sidebar;
