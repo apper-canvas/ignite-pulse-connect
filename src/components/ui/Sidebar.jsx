@@ -7,7 +7,6 @@ import getIcon from '../../utils/iconUtils';
 const ChevronRight = getIcon('ChevronRight');
 const Home = getIcon('Home');
 const Users = getIcon('Users');
-  { name: 'Clients', path: '/clients', icon: 'UserPlus' },
 const BarChart = getIcon('BarChart');
 const ListTodo = getIcon('ListTodo');
 const Settings = getIcon('Settings');
@@ -24,6 +23,7 @@ function Sidebar({ activeRoute }) {
     { name: 'Dashboard', icon: Home, path: '/dashboard' },
     { name: 'Contacts', icon: Users, path: '/contacts' },
     { name: 'Deals', icon: BarChart, path: '/deals' },
+    { name: 'Clients', icon: getIcon('UserPlus'), path: '/clients' },
     { name: 'Tasks', icon: ListTodo, path: '/tasks' },
     { name: 'Settings', icon: Settings, path: '/settings' },
   ];
