@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Pages
 import Home from './pages/Home';
+import Clients from './pages/Clients';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -93,6 +94,7 @@ function App() {
               currentPath.includes('/signup')
               ? `/signup?redirect=${currentPath}`
               : currentPath.includes('/login')
+        <Route path="/clients" element={<Clients />} />
               ? `/login?redirect=${currentPath}`
               : '/login');
           } else if (redirectPath) {

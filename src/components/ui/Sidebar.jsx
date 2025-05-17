@@ -7,6 +7,7 @@ import getIcon from '../../utils/iconUtils';
 const ChevronRight = getIcon('ChevronRight');
 const Home = getIcon('Home');
 const Users = getIcon('Users');
+  { name: 'Clients', path: '/clients', icon: 'UserPlus' },
 const BarChart = getIcon('BarChart');
 const ListTodo = getIcon('ListTodo');
 const Settings = getIcon('Settings');
