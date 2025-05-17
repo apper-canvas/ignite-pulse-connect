@@ -92,9 +92,8 @@ function App() {
           if (!isAuthPage) {
             navigate(
               currentPath.includes('/signup')
-              ? `/signup?redirect=${currentPath}`
-              : currentPath.includes('/login')
-        <Route path="/clients" element={<Clients />} />
+                ? `/signup?redirect=${currentPath}`
+                : currentPath.includes('/login')
               ? `/login?redirect=${currentPath}`
               : '/login');
           } else if (redirectPath) {
@@ -165,6 +164,11 @@ function App() {
           <Route path="/contacts" element={
             <ProtectedRoute>
               <Contacts />
+            </ProtectedRoute>
+          } />
+          <Route path="/clients" element={
+            <ProtectedRoute>
+              <Clients />
             </ProtectedRoute>
           } />
           <Route path="*" element={<NotFound />} />
